@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Học an toàn - Sống tự lập | THCS Tây Thái Ninh</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 15px;
+    color: #2c3e50;
+  }
+
+  .book-container {
+    width: 100%;
+    max-width: 950px;
+    perspective: 2000px;
+  }
+
+  .book {
+    position: relative;
+    width: 100%;
+    min-height: 620px;
+    background: #fdf6e3;
+    border-radius: 10px;
+    box-shadow:
+      0 25px 60px rgba(0, 0, 0, 0.45),
+      inset -1px 0 0 rgba(0, 0, 0, 0.05);
+    padding: 45px 55px 30px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Gáy sách bên trái */
+  .book::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 35px;
+    background: linear-gradient(to right, rgba(0,0,0,0.18), rgba(0,0,0,0.05) 60%, transparent);
+    pointer-events: none;
+  }
+
+  /* Hiệu ứng lật trang */
+  .page-content {
+    animation: pageTurn 0.45s ease;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  @keyframes pageTurn {
+    from { opacity: 0; transform: translateX(25px) rotateY(-3deg); }
+    to   { opacity: 1; transform: translateX(0) rotateY(0); }
+  }
+
+  /* ==== BÌA SÁCH ==== */
+  .cover {
+    text-align: center;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 500px;
+    flex: 1;
+  }
+  .cover-icon {
+    font-size: 5.5em;
+    margin-bottom: 25px;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .cover h1 {
+    font-size: 2.4em;
+    color: #5b2c8f;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 0 rgba(118, 75, 162, 0.15);
+  }
+  .cover .school {
+    font-size: 1.15em;
+    color: #764ba2;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .cover .program {
+    color: #666;
+    font-style: italic;
+    margin-bottom: 30px;
+  }
+  .cover .hint {
+    color: #764ba2;
+    font-weight: 600;
+    margin-top: 20px;
+    animation: blink 1.8s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+  }
+
+  /* ==== BẢNG NỘI DUNG ==== */
+  h1.page-title {
+    text-align: center;
+    color: #5b2c8f;
+    margin-bottom: 8px;
+    font-size: 1.75em;
+  }
+  .subtitle {
+    text-align: center;
+    color: #8e44ad;
+    font-style: italic;
+    margin-bottom: 22px;
+    font-size: 1.05em;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  }
+  th, td {
+    padding: 11px 14px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    font-size: 0.93em;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  th {
+    background: linear-gradient(135deg, #764ba2, #5b2c8f);
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+  tr:nth-child(even) td { background: #faf7ff; }
+  tr:hover td { background: #f0e6ff; transition: background 0.2s; }
+  tr:last-child td { border-bottom: none; }
+
+  .stt-col {
+    width: 50px;
+    text-align: center;
+    font-weight: 700;
+    color: #764ba2;
+  }
+  .topic-col {
+    width: 30%;
+    font-weight: 600;
+    color: #5b2c8f;
+  }
+
+  /* ==== KHỐI XÁC NHẬN (GỘP VÀO CUỐI BẢNG) ==== */
+  .confirm-block {
+    margin-top: 28px;
+    padding: 26px 24px;
+    background: linear-gradient(135deg, #f3ebff 0%, #fdf6e3 100%);
+    border: 2px dashed #b39ddb;
+    border-radius: 12px;
+    text-align: center;
+    animation: fadeConfirm 0.6s ease;
+  }
+  @keyframes fadeConfirm {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .confirm-block .cf-icon {
+    font-size: 2.2em;
+    margin-bottom: 8px;
+  }
+  .confirm-block h2 {
+    color: #5b2c8f;
+    font-size: 1.35em;
+    margin-bottom: 8px;
+  }
+  .confirm-block p {
+    color: #555;
+    font-size: 0.95em;
+    margin-bottom: 18px;
+    line-height: 1.55;
+  }
+  .student-input {
+    width: 100%;
+    max-width: 420px;
+    padding: 14px 18px;
+    font-size: 1.05em;
+    border: 2px solid #764ba2;
+    border-radius: 10px;
+    outline: none;
+    transition: all 0.25s;
+    margin-bottom: 16px;
+    background: #fff;
+    color: #2c3e50;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .student-input:focus {
+    box-shadow: 0 0 0 5px rgba(118, 75, 162, 0.18);
+    border-color: #5b2c8f;
+  }
+  .student-input:disabled {
+    background: #f4f0fa;
+    color: #888;
+  }
+
+  .agree-btn {
+    padding: 14px 42px;
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.08em;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.25s;
+    box-shadow: 0 5px 18px rgba(39, 174, 96, 0.45);
+  }
+  .agree-btn:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(39, 174, 96, 0.6);
+  }
+  .agree-btn:active:not(:disabled) { transform: translateY(0); }
+  .agree-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .status-msg {
+    margin-top: 16px;
+    font-weight: 600;
+    min-height: 24px;
+    font-size: 1em;
+    transition: all 0.3s;
+  }
+  .status-msg.success { color: #27ae60; }
+  .status-msg.error   { color: #e74c3c; }
+  .status-msg.loading { color: #764ba2; }
+
+  /* ==== SỐ TRANG ==== */
+  .page-number {
+    text-align: center;
+    margin-top: 25px;
+    color: #999;
+    font-style: italic;
+    font-size: 0.9em;
+    letter-spacing: 0.5px;
+  }
+
+  /* ==== NÚT ĐIỀU HƯỚNG ==== */
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 22px;
+  }
+  button.nav-btn {
+    flex: 1;
+    padding: 14px 22px;
+    background: linear-gradient(135deg, #764ba2, #5b2c8f);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    transition: all 0.25s;
+    box-shadow: 0 4px 14px rgba(118, 75, 162, 0.35);
+  }
+  button.nav-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(118, 75, 162, 0.5);
+  }
+  button.nav-btn:active:not(:disabled) { transform: translateY(0); }
+  button.nav-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  /* ==== TIẾN TRÌNH ==== */
+  .progress-bar {
+    width: 100%;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 5px;
+    margin-top: 18px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #f9d423, #ff4e50);
+    border-radius: 5px;
+    transition: width 0.4s ease;
+  }
+
+  /* ==== DÒNG BẢN QUYỀN ==== */
+  .copyright {
+    text-align: center;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px dashed #d4c5e8;
+    font-size: 0.85em;
+    color: #8e7ab5;
+    font-style: italic;
+    letter-spacing: 0.3px;
+  }
+  .copyright strong {
+    color: #764ba2;
+    font-style: normal;
+  }
+
+  /* ==== RESPONSIVE ==== */
+  @media (max-width: 640px) {
+    .book { padding: 28px 20px 20px; min-height: 560px; }
+    .book::before { width: 20px; }
+    th, td { font-size: 0.82em; padding: 8px 9px; }
+    h1.page-title { font-size: 1.35em; }
+    .cover h1 { font-size: 1.7em; }
+    .cover-icon { font-size: 4em; }
+    .topic-col { width: 35%; }
+    .stt-col { width: 38px; }
+    .confirm-block { padding: 20px 14px; }
+    .confirm-block h2 { font-size: 1.15em; }
+    .confirm-block p { font-size: 0.88em; }
+    button.nav-btn { padding: 12px 14px; font-size: 0.92em; }
+    .copyright { font-size: 0.78em; }
+  }
+</style>
+</head>
+<body>
+
+<div class="book-container">
+  <div class="book" id="book">
+    <div id="pageContent" style="flex:1; display:flex; flex-direction:column;"></div>
+    <div class="page-number" id="pageNumber"></div>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn" id="prevBtn" onclick="changePage(-1)">◀ Trang trước</button>
+    <button class="nav-btn" id="nextBtn" onclick="changePage(1)">Trang sau ▶</button>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+  </div>
+</div>
+
+<script>
+  /* ============================================================
+     CẤU HÌNH GOOGLE APPS SCRIPT
+     ============================================================ */
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxNcyjg2HqJMSBXpW1Loa6V-oRpCpzfsRUd5xwf1sSxpI7mkfbAUXn5116y4O5NWZAu/exec";
+
+  /* ============================================================
+     DỮ LIỆU CHƯƠNG TRÌNH
+     ============================================================ */
+  const data = [
+    {stt:1,  topic:"Yêu thương bản thân (1 tiết)",        result:"Học sinh nói được 3 điều tự hào về bản thân; hoàn thành bài tự đánh giá trên E-learning."},
+    {stt:2,  topic:"Phòng tránh té ngã (2 tiết)",         result:"100% học sinh thực hiện đúng tư thế bảo vệ vùng đầu khi ngã giả lập tại lớp."},
+    {stt:3,  topic:"Phòng chống ngộ độc (2 tiết)",        result:"Học sinh phân biệt được nhãn chai độc hại; ghi nhớ và thuộc số điện thoại cấp cứu 115."},
+    {stt:4,  topic:"Phòng tránh hỏa hoạn (2 tiết)",       result:"Học sinh di chuyển thoát hiểm đúng tư thế; phản xạ nhanh khi có chuông báo cháy."},
+    {stt:5,  topic:"Cám dỗ nguy hiểm (2 tiết)",           result:"Học sinh thực hành thành thục kỹ năng hét to cầu cứu và chạy nhanh đến nơi an toàn."},
+    {stt:6,  topic:"Côn trùng, động vật cắn (2 tiết)",    result:"Học sinh nêu được quy tắc ứng xử khi gặp chó dữ; thực hiện đúng các bước sơ cứu ban đầu."},
+    {stt:7,  topic:"Bạo lực học đường (2 tiết)",          result:"Học sinh cam kết không bạo lực; biết báo cáo sự việc với giáo viên chủ nhiệm kịp thời."},
+    {stt:8,  topic:"Phòng tránh bỏng (2 tiết)",           result:"Học sinh thực hiện đúng thời gian xả nước (15-20 phút); không bôi các chất lạ lên vết bỏng."},
+    {stt:9,  topic:"An toàn giao thông (2 tiết)",         result:"Học sinh đi bộ đúng phần đường; cha mẹ học sinh xác nhận con đội mũ bảo hiểm đầy đủ."},
+    {stt:10, topic:"Hỗ trợ người gặp tai nạn (2 tiết)",   result:"Học sinh cung cấp thông tin sự cố mạch lạc; thực hiện đúng các bước giữ an toàn."},
+    {stt:11, topic:"Đuối nước (2 tiết)",                  result:"Học sinh thực hiện đúng thao tác ném phao; tuyệt đối không nhảy xuống nước cứu người."},
+    {stt:12, topic:"Tai nạn điện giật (2 tiết)",          result:"Học sinh thực hiện đúng thao tác gạt dây điện; hoàn thành bài test hành vi trực tuyến."},
+    {stt:13, topic:"Ứng phó mưa bão (2 tiết)",            result:"Học sinh liệt kê được 3 vị trí tuyệt đối không trú ẩn (gốc cây, cột điện, trạm buýt)."},
+    {stt:14, topic:"Ứng phó lũ lụt (2 tiết)",             result:"Học sinh chọn đúng các vật dụng sinh tồn cốt lõi đưa vào ba lô khẩn cấp đầy đủ."},
+    {stt:15, topic:"Phòng tránh bắt cóc (2 tiết)",        result:"100% học sinh thực hiện đúng phản xạ la hét, giải phóng cơ thể khỏi tay người ôm."},
+    {stt:16, topic:"Kẹt trên ô tô (2 tiết)",              result:"Học sinh biết vị trí và thao tác bấm còi vô lăng tạo âm thanh liên tục để cầu cứu cứu hộ."},
+    {stt:17, topic:"Nhà một mình (2 tiết)",               result:"Học sinh thực hiện đúng quy tắc từ chối mở cửa; gọi điện báo cáo ngay cho bố mẹ biết."},
+    {stt:18, topic:"Vượt qua nỗi sợ (2 tiết)",            result:"Học sinh làm chủ được cảm xúc; ghi nhận chỉ số tự tin tăng lên rõ rệt trên hệ thống."},
+    {stt:19, topic:"Quản lý tiền (2 tiết)",               result:"Học sinh phân loại chính xác các khoản chi; hoàn thành sơ đồ tư duy tài chính cá nhân."},
+    {stt:20, topic:"Xe công cộng (2 tiết)",               result:"Học sinh thực hiện đúng quy tắc di chuyển an toàn trên xe; không đùa nghịch, chạy nhảy."},
+    {stt:21, topic:"Xử lý điện giật (2 tiết)",            result:"Học sinh thực hiện đúng tần suất ấn ngực giả lập; nhớ quy trình báo động cứu hộ nhanh."},
+    {stt:22, topic:"Tự tin trước đám đông (2 tiết)",      result:"Học sinh duy trì giao tiếp bằng mắt với người nghe; giảm thiểu tối đa động tác thừa."},
+    {stt:23, topic:"Quản lý thời gian (2 tiết)",          result:"Hoàn thành bảng thời gian biểu tuần; cha mẹ học sinh tích chọn xác nhận việc tự giác ở nhà."},
+    {stt:24, topic:"Phòng chống xâm hại (2 tiết)",        result:"Học sinh chỉ đúng các vùng bất khả xâm phạm; biết lập danh sách 3 người lớn tin cậy."},
+    {stt:25, topic:"Giải quyết xung đột (2 tiết)",        result:"Học sinh sử dụng ngôn từ ôn hòa để giải quyết mâu thuẫn mà không cần dùng bạo lực."},
+    {stt:26, topic:"Trò chơi trực tuyến (2 tiết)",        result:"Học sinh tự đưa ra cam kết thời lượng chơi game (dưới 45 phút/ngày) trên phần mềm số."},
+    {stt:27, topic:"Xem video an toàn (2 tiết)",          result:"Học sinh nhận diện đúng nội dung độc hại; hình thành thói quen tắt ngay video xấu."},
+    {stt:28, topic:"Chuẩn bị đồ dùng (1 tiết)",           result:"Ba lô đi học ngăn nắp, không mang thừa đồ chơi; cha mẹ học sinh chấm đạt qua ứng dụng."},
+    {stt:29, topic:"Tự lập thời gian biểu (2 tiết)",      result:"Học sinh hoàn thành sản phẩm thời gian biểu cá nhân treo tại góc học tập trực quan."},
+    {stt:30, topic:"Ứng xử văn minh mạng (2 tiết)",       result:"Học sinh không sử dụng ngôn từ thù ghét; biết cách phản hồi văn minh trực tuyến."},
+    {stt:31, topic:"Nhận biết AI quanh em (2 tiết)",      result:"Học sinh gọi tên đúng ít nhất 3 ứng dụng sử dụng công nghệ AI xung quanh mình."},
+    {stt:32, topic:"Xây dựng câu lệnh AI (2 tiết)",       result:"Học sinh tạo được câu lệnh rõ nghĩa; AI trả về kết quả chính xác theo mục tiêu học tập."},
+    {stt:33, topic:"Đánh giá thông tin AI (2 tiết)",      result:"Học sinh không phụ thuộc hoàn toàn vào công nghệ; biết tra cứu lại sách để xác minh."},
+    {stt:34, topic:"Bảo vệ môi trường (1 tiết)",          result:"Học sinh vứt rác đúng nơi quy định; hoàn thành thử thách phân loại rác trên phần mềm số."},
+    {stt:35, topic:"Xếp hàng văn minh (1 tiết)",          result:"Học sinh giữ đúng vị trí xếp hàng, không chen lấn xô đẩy; thể hiện hành vi lịch sự."},
+    {stt:36, topic:"Nội quy lớp học (1 tiết)",            result:"Học sinh chấp hành nghiêm túc nội quy; giảm số lần giáo viên phải nhắc nhở trong tuần."},
+    {stt:37, topic:"9 TIẾT ÔN TẬP ĐỊNH KỲ (9 tiết)",      result:"Học sinh đạt chứng nhận năng lực hằng tháng; dữ liệu cập nhật tự động gửi về phụ huynh."}
+  ];
+
+  /* ============================================================
+     DÒNG BẢN QUYỀN DÙNG CHUNG
+     ============================================================ */
+  const COPYRIGHT_HTML = `
+    <div class="copyright">
+      © Bản quyền thuộc về GV: <strong>Hoàng Anh Dũng</strong> — Trường THCS Tây Thái Ninh
+    </div>`;
+
+  /* ============================================================
+     KHỐI XÁC NHẬN (đặt ngay sau STT 37)
+     ============================================================ */
+  const CONFIRM_HTML = `
+    <div class="confirm-block" id="confirmBlock">
+      <div class="cf-icon">✍️</div>
+      <h2>Xác nhận tham gia học</h2>
+      <p>Em hãy nhập <strong>họ và tên</strong> của mình và nhấn nút <strong>"Đồng ý học"</strong> để xác nhận tham gia chương trình.</p>
+      <input
+        type="text"
+        id="studentName"
+        class="student-input"
+        placeholder="Ví dụ: Nguyễn Văn An"
+        autocomplete="off"
+        maxlength="50"
+      />
+      <button class="agree-btn" id="agreeBtn" onclick="submitName()">✅ Đồng ý học</button>
+      <div class="status-msg" id="statusMsg"></div>
+    </div>`;
+
+  /* ============================================================
+     PHÂN TRANG
+     ============================================================ */
+  const ITEMS_PER_PAGE = 6;
+  const pages = [];
+
+  // Trang bìa
+  pages.push({ type: 'cover' });
+
+  // Các trang bảng nội dung
+  for (let i = 0; i < data.length; i += ITEMS_PER_PAGE) {
+    const items = data.slice(i, i + ITEMS_PER_PAGE);
+    pages.push({
+      type: 'table',
+      items: items,
+      isLastTable: (i + ITEMS_PER_PAGE >= data.length) // Đánh dấu trang cuối cùng của bảng
+    });
+  }
+
+  let currentPage = 0;
+
+  /* ============================================================
+     HIỂN THỊ TRANG
+     ============================================================ */
+  function render() {
+    const page = pages[currentPage];
+    const container = document.getElementById('pageContent');
+    const pageNumEl = document.getElementById('pageNumber');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const progressFill = document.getElementById('progressFill');
+
+    if (page.type === 'cover') {
+      container.innerHTML = `
+        <div class="cover page-content">
+          <div class="cover-icon">📚</div>
+          <h1>HỌC AN TOÀN - SỐNG TỰ LẬP</h1>
+          <p class="school">TRƯỜNG THCS TÂY THÁI NINH</p>
+          <p class="program">Chương trình giáo dục kỹ năng sống</p>
+          <p class="hint">👉 Nhấn "Trang sau" để bắt đầu đọc nội dung</p>
+          ${COPYRIGHT_HTML}
+        </div>`;
+      pageNumEl.textContent = "— Bìa sách —";
+    }
+    else if (page.type === 'table') {
+      const rows = page.items.map(item => `
+        <tr>
+          <td class="stt-col">${item.stt}</td>
+          <td class="topic-col">${item.topic}</td>
+          <td>${item.result}</td>
+        </tr>`).join('');
+
+      // Nếu là trang bảng CUỐI CÙNG thì chèn khối xác nhận ngay sau bảng
+      const confirmSection = page.isLastTable ? CONFIRM_HTML : '';
+
+      container.innerHTML = `
+        <div class="page-content">
+          <h1 class="page-title">Chương trình Kỹ năng sống</h1>
+          <div class="subtitle">"Học an toàn - Sống tự lập"</div>
+          <table>
+            <thead>
+              <tr>
+                <th>STT</th>
+                <th>Chủ đề kỹ năng</th>
+                <th>Kết quả kỳ vọng / Cơ sở đánh giá</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+          ${confirmSection}
+          ${COPYRIGHT_HTML}
+        </div>`;
+
+      const totalTablePages = pages.filter(p => p.type === 'table').length;
+      const tablePageIdx = pages.slice(0, currentPage + 1).filter(p => p.type === 'table').length;
+      pageNumEl.textContent = `Trang ${tablePageIdx} / ${totalTablePages}`;
+
+      // Nếu là trang cuối có khối xác nhận, tự động cuộn xuống khối đó sau khi render
+      if (page.isLastTable) {
+        setTimeout(() => {
+          const cf = document.getElementById('confirmBlock');
+          if (cf) cf.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          const inp = document.getElementById('studentName');
+          // Không tự focus để tránh bàn phím mobile bật lên che nội dung; chỉ focus khi người dùng bấm
+        }, 400);
+      }
+    }
+
+    // Cập nhật nút điều hướng
+    prevBtn.disabled = (currentPage === 0);
+    nextBtn.disabled = (currentPage === pages.length - 1);
+
+    // Cập nhật thanh tiến trình
+    const progress = (currentPage / (pages.length - 1)) * 100;
+    progressFill.style.width = progress + '%';
+
+    // Cuộn lên đầu sách
+    document.getElementById('book').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  /* ============================================================
+     CHUYỂN TRANG
+     ============================================================ */
+  function changePage(delta) {
+    const newPage = currentPage + delta;
+    if (newPage < 0 || newPage >= pages.length) return;
+    currentPage = newPage;
+    render();
+  }
+
+  /* ============================================================
+     GỬI DỮ LIỆU LÊN GOOGLE SHEET
+     ============================================================ */
+  async function submitName() {
+    const nameInput = document.getElementById('studentName');
+    const statusMsg = document.getElementById('statusMsg');
+    const agreeBtn = document.getElementById('agreeBtn');
+
+    if (!nameInput || !statusMsg || !agreeBtn) return;
+
+    const name = nameInput.value.trim().replace(/\s+/g, ' ');
+
+    // Kiểm tra dữ liệu
+    if (!name) {
+      statusMsg.textContent = "⚠️ Vui lòng nhập họ và tên!";
+      statusMsg.className = "status-msg error";
+      nameInput.focus();
+      return;
+    }
+    if (name.length < 2) {
+      statusMsg.textContent = "⚠️ Họ tên quá ngắn, vui lòng kiểm tra lại!";
+      statusMsg.className = "status-msg error";
+      nameInput.focus();
+      return;
+    }
+    if (!/[a-zA-ZÀ-ỹ]/.test(name)) {
+      statusMsg.textContent = "⚠️ Họ tên không hợp lệ, vui lòng nhập lại!";
+      statusMsg.className = "status-msg error";
+      nameInput.focus();
+      return;
+    }
+
+    // Vô hiệu hóa nút để tránh bấm nhiều lần
+    agreeBtn.disabled = true;
+    nameInput.disabled = true;
+    statusMsg.textContent = "⏳ Đang gửi dữ liệu, vui lòng đợi...";
+    statusMsg.className = "status-msg loading";
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: name })
+      });
+
+      // Với no-cors, không đọc được response nhưng dữ liệu đã gửi thành công
+      statusMsg.innerHTML = `✅ Cảm ơn <strong>${escapeHtml(name)}</strong>!<br>Em đã xác nhận đồng ý học thành công.`;
+      statusMsg.className = "status-msg success";
+
+      // Hiệu ứng chúc mừng
+      confetti();
+    }
+    catch (err) {
+      console.error('Lỗi gửi dữ liệu:', err);
+      statusMsg.textContent = "❌ Có lỗi xảy ra, vui lòng thử lại!";
+      statusMsg.className = "status-msg error";
+      agreeBtn.disabled = false;
+      nameInput.disabled = false;
+    }
+  }
+
+  /* ============================================================
+     HÀM HỖ TRỢ
+     ============================================================ */
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  // Hiệu ứng pháo hoa nhỏ khi gửi thành công
+  function confetti() {
+    const colors = ['#f9d423', '#ff4e50', '#27ae60', '#764ba2', '#3498db'];
+    for (let i = 0; i < 30; i++) {
+      const c = document.createElement('div');
+      c.style.cssText = `
+        position: fixed;
+        top: 50%; left: 50%;
+        width: 8px; height: 8px;
+        background: ${colors[Math.floor(Math.random() * colors.length)]};
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transition: all 1s ease-out;
+      `;
+      document.body.appendChild(c);
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 100 + Math.random() * 250;
+      const x = Math.cos(angle) * dist;
+      const y = Math.sin(angle) * dist;
+
+      requestAnimationFrame(() => {
+        c.style.transform = `translate(${x}px, ${y}px) scale(0)`;
+        c.style.opacity = '0';
+      });
+
+      setTimeout(() => c.remove(), 1100);
+    }
+  }
+
+  /* ============================================================
+     KHỞI TẠO
+     ============================================================ */
+  render();
+
+  // Hỗ trợ phím mũi tên trái/phải và Enter
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft')  changePage(-1);
+    if (e.key === 'ArrowRight') changePage(1);
+    if (e.key === 'Enter') {
+      const btn = document.getElementById('agreeBtn');
+      if (btn && !btn.disabled) submitName();
+    }
+  });
+</script>
+
+</body>
+</html>
